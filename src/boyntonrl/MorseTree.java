@@ -44,42 +44,89 @@ public class MorseTree<E>  {
     }
 
     public void add(E symbol, String code) {
-        char[] chars = code.toCharArray();
-        Node<E> currentNode = root;
-        for (char character : chars) {
-            if (character == '.') {
-                if (currentNode.leftChild == null) {
-                    currentNode.leftChild = new Node<>(null);
-                }
-                currentNode = currentNode.leftChild;
-            } else if (character == '-') {
-                if (currentNode.rightChild == null) {
-                    currentNode.rightChild = new Node<>(null);
-                }
-                currentNode = currentNode.rightChild;
-            }
-        }
-        currentNode.set(symbol);
+        add(symbol, code, root);
     }
 
-    public E decode(String code) {
+    private void add(E symbol, String code, Node<E> root) throws IllegalArgumentException {
+        if (code.length() > 1) {
+            if (code.substring(0,1).equals(".")) {
+                if (root.leftChild == null) {
+                    root.leftChild = new Node<>(null);
+                }
+                add(symbol, code.substring(1), root.leftChild);
+            } else if (code.substring(0,1).equals("-")) {
+                if (root.rightChild == null) {
+                    root.rightChild = new Node<>(null);
+                }
+                add(symbol, code.substring(1), root.rightChild);
+            } else {
+                throw new IllegalArgumentException("not a dot or dash \"" + code + "\"");
+            }
+        } else {
+            if (code.equals(".")) {
+                if (root.leftChild == null) {
+                    root.leftChild = new Node<>(symbol);
+                } else {
+                    root.leftChild.set(symbol);
+                }
+            } else if (code.equals("-")) {
+                if (root.rightChild == null) {
+                    root.rightChild = new Node<>(symbol);
+                } else {
+                    root.rightChild.set(symbol);
+                }
+            } else {
+                throw new IllegalArgumentException("not a dot or dash \"" + code + "\"");
+            }
+        }
+    }
+
+    public E decode(String code) throws IllegalArgumentException {
         return decode(code, root);
     }
 
-    private E decode(String code, Node<E> root) {
+    private E decode(String code, Node<E> root) throws IllegalArgumentException {
         E symbol;
-        if (code.length() > 1) {
+        if (code.length() > 0) {
             if (code.charAt(0) == '.') {
                 symbol = decode(code.substring(1), root.leftChild);
             } else if (code.charAt(0) == '-') {
                 symbol = decode(code.substring(1), root.rightChild);
             } else {
-                throw new IllegalArgumentException(code + " contains characters other than . or -");
+                throw new IllegalArgumentException(code);
             }
         } else {
             symbol = root.value;
         }
         return symbol;
+    }
+
+    @Override
+    public String toString() {
+        return toString(root);
+    }
+
+    private String toString(Node<E> root) {
+        String morseTreeStr = "";
+        if (root != null) {
+            if (root.leftChild != null) {
+                morseTreeStr = root.value + "\n" + toString(root.leftChild) + ", " + toString
+                        (root.rightChild);
+            } else if (root.rightChild != null) {
+                morseTreeStr = root.value + "\n" + toString(root.rightChild);
+            } else {
+                morseTreeStr = "" + root.value;
+            }
+        }
+        return morseTreeStr;
+    }
+
+    public String test8() {
+        return test8(root);
+    }
+
+    private String test8(Node<E> root) {
+        return "" + root.rightChild.leftChild.rightChild.rightChild.value;
     }
 
 }
