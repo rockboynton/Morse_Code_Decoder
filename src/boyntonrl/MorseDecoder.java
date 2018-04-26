@@ -62,8 +62,8 @@ public class MorseDecoder {
         }
     }
 
-    private static void decodeFile(File file) throws FileNotFoundException {
-        try (Scanner parser = new Scanner(file)) {
+    private static void decodeFile(File morseFile, File textFile) throws FileNotFoundException {
+        try (Scanner parser = new Scanner(morseFile)) {
             Scanner lineParser;
             while (parser.hasNextLine()) {
                 lineParser = new Scanner(parser.nextLine());
