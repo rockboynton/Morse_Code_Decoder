@@ -33,6 +33,8 @@ public class MorseDecoder {
                 System.err.println("File not Found ");
             }
         } while (!read);
+
+
     }
 
     private static void loadDecoder(File file) throws FileNotFoundException {
