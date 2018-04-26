@@ -10,8 +10,8 @@ package boyntonrl;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.Scanner;
-import java.util.regex.Pattern;
 
 /**
  * Read an encoded file and writes the decoded result to an output file.
@@ -46,6 +46,7 @@ public class MorseDecoder {
                 File textFile = new File(stdIn.next());
                 decodeFile(morseFile, textFile);
                 read = true;
+                System.out.println(textFile.toString() + " successfully decoded!");
             } catch (FileNotFoundException e) {
                 System.err.println("something went wrong");
             }
@@ -67,21 +68,24 @@ public class MorseDecoder {
     private static void decodeFile(File morseFile, File textFile) throws FileNotFoundException {
         try (Scanner parser = new Scanner(morseFile)) {
             Scanner lineParser;
-            while (parser.hasNextLine()) {
-                lineParser = new Scanner(parser.nextLine());
-                while (lineParser.hasNext()) {
-                    String next = lineParser.next();
-                    if (next.equals("|")) {
-                        System.out.print(" ");
-                    } else {
-                        try {
-                            System.out.print(morseTree.decode(next));
-                        } catch (IllegalArgumentException iae) {
-                            System.err.println("Warning: skipping " + iae.getLocalizedMessage());
+            try (PrintWriter writer = new PrintWriter(textFile)){
+                while (parser.hasNextLine()) {
+                    lineParser = new Scanner(parser.nextLine());
+                    while (lineParser.hasNext()) {
+                        String next = lineParser.next();
+                        if (next.equals("|")) {
+                            writer.print(" ");
+                        } else {
+                            try {
+                                writer.print(morseTree.decode(next));
+                            } catch (IllegalArgumentException iae) {
+                                System.err.println("Warning: skipping " +
+                                        iae.getLocalizedMessage());
+                            }
                         }
                     }
+                    writer.println();
                 }
-                System.out.println();
             }
         }
     }

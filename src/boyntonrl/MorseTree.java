@@ -12,7 +12,7 @@ package boyntonrl;
  * A binary tree for storing Morse Codes
  * @param <E> Type of date to be stored in the binary tree
  */
-public class MorseTree<E>  {
+public class MorseTree<E> {
 
     private static class Node<E> {
         E value;
@@ -43,18 +43,23 @@ public class MorseTree<E>  {
         root = new Node<>(null);
     }
 
+    /**
+     * Adds a symbol to this binary tree corresponding to the morse code
+     * @param symbol to be contained in a node in the tree
+     * @param code Morse code
+     */
     public void add(E symbol, String code) {
         add(symbol, code, root);
     }
 
     private void add(E symbol, String code, Node<E> root) throws IllegalArgumentException {
         if (code.length() > 1) {
-            if (code.substring(0,1).equals(".")) {
+            if (code.substring(0, 1).equals(".")) {
                 if (root.leftChild == null) {
                     root.leftChild = new Node<>(null);
                 }
                 add(symbol, code.substring(1), root.leftChild);
-            } else if (code.substring(0,1).equals("-")) {
+            } else if (code.substring(0, 1).equals("-")) {
                 if (root.rightChild == null) {
                     root.rightChild = new Node<>(null);
                 }
@@ -81,6 +86,12 @@ public class MorseTree<E>  {
         }
     }
 
+    /**
+     * Decodes an encoded string to return a symbol in the binary tree
+     * @param code Morse encoded string
+     * @return symbol in the binary tree
+     * @throws IllegalArgumentException if a character other than a . or - is found
+     */
     public E decode(String code) throws IllegalArgumentException {
         return decode(code, root);
     }
@@ -100,33 +111,4 @@ public class MorseTree<E>  {
         }
         return symbol;
     }
-
-    @Override
-    public String toString() {
-        return toString(root);
-    }
-
-    private String toString(Node<E> root) {
-        String morseTreeStr = "";
-        if (root != null) {
-            if (root.leftChild != null) {
-                morseTreeStr = root.value + "\n" + toString(root.leftChild) + ", " + toString
-                        (root.rightChild);
-            } else if (root.rightChild != null) {
-                morseTreeStr = root.value + "\n" + toString(root.rightChild);
-            } else {
-                morseTreeStr = "" + root.value;
-            }
-        }
-        return morseTreeStr;
-    }
-
-    public String test8() {
-        return test8(root);
-    }
-
-    private String test8(Node<E> root) {
-        return "" + root.rightChild.leftChild.rightChild.rightChild.value;
-    }
-
 }
